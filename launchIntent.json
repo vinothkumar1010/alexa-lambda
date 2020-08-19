@@ -1,0 +1,325 @@
+{
+    "document": {
+        "type": "APL",
+        "version": "1.3",
+        "styles": {
+            "baseText": {
+                "values": [
+                    {
+                        "color": "#333333"
+                    }
+                ]
+            },
+            "suggestionChip": {
+                "values": [
+                    {
+                        "backgroundColor": "white",
+                        "borderColor": "#cccccc",
+                        "borderWidth": "2dp",
+                        "borderRadius": 25
+                    }
+                ]
+            },
+            "suggestionChipText": {
+                "values": [
+                    {
+                        "textAlign": "center",
+                        "textAlignVertical": "center",
+                        "color": "#000000",
+                        "fontStyle": "italic",
+                        "fontSize": "25dp"
+                    },
+                    {
+                        "when": "${@viewportProfile != @hubRoundSmall}",
+                        "fontSize": "30dp"
+                    }
+                ]
+            }
+        },
+        "resources": [
+            {
+                "dimensions": {
+                    "scRightPadding": "20dp",
+                    "scLeftPadding": "20dp",
+                    "scTopPadding": "5dp",
+                    "scBottomPadding": "5dp"
+                }
+            }
+        ],
+        "import": [
+            {
+                "name": "alexa-layouts",
+                "version": "1.1.0"
+            }
+        ],
+        "mainTemplate": {
+            "parameters": [
+                "payload"
+            ],
+            "items": [
+                {
+                    "when": "${@viewportProfile == @hubRoundSmall}",
+                    "type": "Container",
+                    "width": "100vw",
+                    "height": "100vh",
+                    "paddingTop": "16dp",
+                    "paddingLeft": "16dp",
+                    "paddingBottom": "16dp",
+                    "paddingRight": "16dp",
+                    "items": [
+                        {
+                            "type": "AlexaBackground",
+                            "backgroundColor": "white"
+                        },
+                        {
+                            "type": "AlexaHeader",
+                            "headerTitle": "${payload.data.IntentInfo.title}",
+                            "headerAttributionImage": "${payload.data.logoUrl}",
+                            "theme": "light"
+                        },
+                        {
+                            "type": "Container",
+                            "width": "98%",
+                            "paddingTop": "16dp",
+                            "paddingBottom": "16dp",
+                            "direction": "column",
+                            "alignItems": "center",
+                            "items": [
+                                {
+                                    "type": "Text",
+                                    "text": "${payload.data.welcomeInfo.hi} ${payload.data.welcomeInfo.customerName} ${payload.data.welcomeInfo.welcomeMessage}",
+                                    "paddingLeft": "35dp",
+                                    "width": "100%",
+                                    "style": "baseText"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ScrollView",
+                            "description": "scrollview which holds all suggestion chips",
+                            "width": "100%",
+                            "item": {
+                                "type": "Container",
+                                "paddingTop": "16dp",
+                                "paddingBottom": "16dp",
+                                "paddingLeft": "80dp",
+                                "direction": "column",
+                                "width": "100%",
+                                "items": [
+                                    {
+                                        "type": "TouchWrapper",
+                                        "width": "100%",
+                                        "item": {
+                                            "type": "Frame",
+                                            "style": "suggestionChip",
+                                            "paddingRight": "@scRightPadding",
+                                            "paddingLeft": "@scLeftPadding",
+                                            "paddingTop": "@scTopPadding",
+                                            "paddingBottom": "@scBottomPadding",
+                                            "width": "80%",
+                                            "item": {
+                                                "type": "Text",
+                                                "text": "${payload.data.suggestionChips.chip1.displayText}",
+                                                "style": "suggestionChipText"
+                                            }
+                                        },
+                                        "onPress": [
+                                            {
+                                                "type": "SendEvent",
+                                                "arguments": [
+                                                    "${payload.data.suggestionChips.chip1.argument}"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Text",
+                                        "text": "",
+                                        "height": "10dp",
+                                        "description": "using as place holder"
+                                    },
+                                    {
+                                        "type": "TouchWrapper",
+                                        "width": "80%",
+                                        "item": {
+                                            "type": "Frame",
+                                            "style": "suggestionChip",
+                                            "paddingRight": "@scRightPadding",
+                                            "paddingLeft": "@scLeftPadding",
+                                            "paddingTop": "@scTopPadding",
+                                            "paddingBottom": "@scBottomPadding",
+                                            "item": {
+                                                "type": "Text",
+                                                "text": "${payload.data.suggestionChips.chip2.displayText}",
+                                                "style": "suggestionChipText"
+                                            }
+                                        },
+                                        "onPress": [
+                                            {
+                                                "type": "SendEvent",
+                                                "arguments": [
+                                                    "${payload.data.suggestionChips.chip2.argument}"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "when": "${@viewportProfile != @hubRoundSmall}",
+                    "type": "Container",
+                    "height": "100%",
+                    "width": "100%",
+                    "paddingTop": "16dp",
+                    "paddingLeft": "16dp",
+                    "paddingBottom": "16dp",
+                    "paddingRight": "16dp",
+                    "items": [
+                        {
+                            "type": "AlexaBackground",
+                            "backgroundColor": "white"
+                        },
+                        {
+                            "type": "AlexaHeader",
+                            "headerTitle": "${payload.data.IntentInfo.title}",
+                            "headerAttributionImage": "${payload.data.logoUrl}",
+                            "theme": "light"
+                        },
+                        {
+                            "type": "Container",
+                            "width": "98%",
+                            "paddingTop": "16dp",
+                            "paddingBottom": "16dp",
+                            "direction": "row",
+                            "items": [
+                                {
+                                    "type": "Text",
+                                    "text": "${payload.data.welcomeInfo.hi} ${payload.data.welcomeInfo.customerName} ${payload.data.welcomeInfo.welcomeMessage}",
+                                    "paddingTop": "35dp",
+                                    "paddingBottom": "35dp",
+                                    "paddingLeft": "35dp",
+                                    "width": "65vw",
+                                    "style": "baseText"
+                                },
+                                {
+                                    "type": "Image",
+                                    "height": "240",
+                                    "width": "268",
+                                    "source": "${payload.data.hugoImageUrl}",
+                                    "scale": "best-fit",
+                                    "align": "center"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Container",
+                            "width": "98%",
+                            "paddingTop": "16dp",
+                            "paddingBottom": "16dp",
+                            "direction": "row",
+                            "description": "Container for suggestion chip",
+                            "items": [
+                                {
+                                    "type": "TouchWrapper",
+                                    "item": {
+                                        "type": "Frame",
+                                        "style": "suggestionChip",
+                                        "paddingRight": "@scRightPadding",
+                                        "paddingLeft": "@scLeftPadding",
+                                        "paddingTop": "@scTopPadding",
+                                        "paddingBottom": "@scBottomPadding",
+                                        "item": {
+                                            "type": "Text",
+                                            "text": "${payload.data.suggestionChips.chip1.displayText}",
+                                            "style": "suggestionChipText"
+                                        }
+                                    },
+                                    "onPress": [
+                                        {
+                                            "type": "SendEvent",
+                                            "arguments": [
+                                                "${payload.data.suggestionChips.chip1.argument}"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Text",
+                                    "text": "",
+                                    "width": "10dp",
+                                    "description": "using as place holder"
+                                },
+                                {
+                                    "type": "TouchWrapper",
+                                    "item": {
+                                        "type": "Frame",
+                                        "style": "suggestionChip",
+                                        "paddingRight": "@scRightPadding",
+                                        "paddingLeft": "@scLeftPadding",
+                                        "paddingTop": "@scTopPadding",
+                                        "paddingBottom": "@scBottomPadding",
+                                        "item": {
+                                            "type": "Text",
+                                            "text": "${payload.data.suggestionChips.chip2.displayText}",
+                                            "style": "suggestionChipText"
+                                        }
+                                    },
+                                    "onPress": [
+                                        {
+                                            "type": "SendEvent",
+                                            "arguments": [
+                                                "${payload.data.suggestionChips.chip2.argument}"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "datasources": {
+        "data": {
+            "logoUrl": "https://d2o906d8ln7ui1.cloudfront.net/placeholder_image.png",
+            "hugoImageUrl": "https://www.reliant.com/en/Images/p7_heart_health_aid.png",
+            "IntentInfo": {
+                "title": "Welcome"
+            },
+            "welcomeInfo": {
+                "hi": "Hi",
+                "customerName": "John",
+                "welcomeMessage": " welcome to Reliant. How can I help you ?",
+                "hugoImage": ""
+            },
+            "suggestionChips": {
+                "chip1": {
+                    "displayText": "what is my usage ?",
+                    "argument": "usageRequested"
+                },
+                "chip2": {
+                    "displayText": "what is my balance ?",
+                    "argument": "balanceRequested"
+                }
+            },
+            "footerData": {
+                "type": "object",
+                "properties": {
+                    "hintTextToTransform": "What is my balance ?"
+                },
+                "transformers": [
+                    {
+                        "inputPath": "hintTextToTransform",
+                        "transformer": "textToHint",
+                        "outputName": "transformedHintText"
+                    }
+                ]
+            }
+        }
+    },
+    "sources": {}
+}
