@@ -5,7 +5,7 @@ const yelp = require('yelp-fusion');
 const {getUserDetails,getBabyDetails,updatePregnancyDetails,babyAndPregnancyDetails}=require("./db")
 const {updatePregnancyHandler,updatePositivePregnancyHandler,updateFailurePregnancyHandler}=require("./updatePregnancy")
 const {ErrorHandler,LogRequestInterceptor,LogResponseInterceptor}=require("./utilityHandlers")
-
+const {HelpIntentHandler,CancelAndStopIntentHandler,SessionEndedRequestHandler}=require("./amazonIntents")
 // from https://www.yelp.com/developers/v3/manage_app
 const apiKey = '-GgFviVcHtiYCMq6wC4sopjwvCi_k35DjiwdkfpeT-BMJUzNRveUAqgx2xpONfa7tS0evvg1vh-oKIcJ4ziQrtVUWNJjIFTjQAwICc8anC9o89g5-xUVepxCoSIeX3Yx';
 
@@ -108,6 +108,22 @@ const LaunchRequestHandler = {
     {
       speakOutput="Hi, <p>welcome back to mamma world.</p> "
       let userGivenDate="";
+      console.log(userData.pregnancyDetails)
+      if(("pregnancyDetails" in userData))
+      {
+        if(userData.pregnancyDetails.pregancyWentWell)
+        {
+          speakOutput+="<p>Our data indicates that you gave birth to a child</p>. <p>If you would like start another pregnancy journey please say</p><p>I am going to have another baby</p>";
+          return welcomeSpeechMessage(handlerInput,speakOutput);
+        }
+        else
+        {
+          speakOutput+="<p>Our data indicates that your last prgnancy didn't go well</p>. <p>If you would like start another pregnancy journey please say</p><p>I am going to have another baby</p>";
+          return welcomeSpeechMessage(handlerInput,speakOutput);
+        }
+      }
+      else
+      {
      return getBabyDetails(userData.alexaUserID).then(response=>{
             console.log(response);
             userGivenDate=response.babyData.usergivenDate;
@@ -115,7 +131,7 @@ const LaunchRequestHandler = {
               return welcomeSpeechMessage(handlerInput,speakOutput,true,userGivenDate);
             else
             {
-              speakOutput+="<p>if you know your due date or first day of your last menstrual period </p>, please say like, <p>date for calculation is, August 3 2020</p>,  <p>else , please say  No </p>"
+              speakOutput+="<p>Let's calculate your pregnancy week</p><p>For that , please say like,</p>       <p>date for calculation is, August 3 2020</p>,  <p>else , please say  No </p>"
               return welcomeSpeechMessage(handlerInput,speakOutput);
             }
             
@@ -123,7 +139,7 @@ const LaunchRequestHandler = {
       catch(error=>{
         return ErrorHandler.handle(handlerInput,{message:error});
       })
-     
+    }
     }
   }
   function welcomeSpeechMessage(handlerInput,speechMessage,addBabyGrowth=false,usergivenDate="")
@@ -166,7 +182,7 @@ const LaunchRequestHandler = {
           }
           else if (getPregnancyWeek.completedWeeks>=40)
           {
-            speakOutput+="<p>You are more than 40 weeks of your pregnancy. Please consult your doctor>/p> <p> If you would like to find a doctor please say</p><p> find doctor for my pregnancy </p> ";
+            speakOutput+="<p>You are more than 40 weeks of your pregnancy</p> <p> If you already gave brith ask </p><p> update my pregnancy </p> ";
           }
           else
           {
@@ -350,7 +366,7 @@ const pregnancyWeekHandler={
       }
       else if (calculatedWeeKNumber.completedWeeks>=40)
       {
-        speakOutput+="<p>You are more than 40 weeks of your pregnancy. Please consult your doctor>/p> <p> If you would like to find a doctor please say</p><p> find doctor for my pregnancy </p> ";
+        speakOutput+="<p>You are more than 40 weeks of your pregnancy</p> <p> If you already gave brith ask </p><p> update my pregnancy </p> ";
       }
       else
       {
@@ -562,46 +578,6 @@ function babySizeBasedonWeek(weekNumber)
    
   }
 
- 
-
-const HelpIntentHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
-  },
-  handle(handlerInput) {
-    const speechText = 'You can do following things';
-
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(speechText)
-      .getResponse();
-  }
-};
-const CancelAndStopIntentHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
-        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
-  },
-  handle(handlerInput) {
-    const speechText = 'Thank you!';
-
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .withShouldEndSession(true)
-      .getResponse();
-  }
-};
-const SessionEndedRequestHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
-  },
-  handle(handlerInput) {
-    //any cleanup logic goes here
-    return handlerInput.responseBuilder.getResponse();
-  }
-};
   let skill;
 
 exports.handler = async function (event, context) {
@@ -644,7 +620,7 @@ exports.handler = async function (event, context) {
   console.log(`RESPONSE++++${JSON.stringify(response)}`);
 
   return response; //uncomment this line for deployment and comment the below return for deployment
-  /* return {
+ /*  return {
     'statusCode': 200,
     'body': JSON.stringify({
         message: response
